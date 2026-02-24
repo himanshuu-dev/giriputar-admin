@@ -40,10 +40,11 @@ jobs:
             echo "Missing SUPABASE url or anon key secrets." >&2
             exit 1
           fi
-          cat > .env <<EOF
-          SUPABASE_URL=$SUPABASE_URL
-          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
-          EOF
+          {
+            printf 'SUPABASE_PROJECT_URL=%s\n' "$SUPABASE_URL"
+            printf 'SUPABASE_URL=%s\n' "$SUPABASE_URL"
+            printf 'SUPABASE_ANON_KEY=%s\n' "$SUPABASE_ANON_KEY"
+          } > .env
 
       - name: Install dependencies
         run: flutter pub get
