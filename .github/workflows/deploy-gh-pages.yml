@@ -27,6 +27,13 @@ jobs:
           channel: "stable"
           cache: true
 
+      - name: Create .env
+        run: |
+          cat > .env <<'EOF'
+          SUPABASE_PROJECT_URL=${{ secrets.SUPABASE_PROJECT_URL }}
+          SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          EOF
+
       - name: Install dependencies
         run: flutter pub get
 
