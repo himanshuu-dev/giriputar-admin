@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,9 +31,18 @@ jobs:
 
       - name: Create .env
         run: |
-          cat > .env <<'EOF'
-          SUPABASE_PROJECT_URL=${{ secrets.SUPABASE_PROJECT_URL }}
-          SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_URL="${{ secrets.SUPABASE_PROJECT_URL }}"
+          if [ -z "$SUPABASE_URL" ]; then
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}"
+          fi
+          SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}"
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Missing SUPABASE url or anon key secrets." >&2
+            exit 1
+          fi
+          cat > .env <<EOF
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
           EOF
 
       - name: Install dependencies

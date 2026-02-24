@@ -10,10 +10,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  final supabaseUrl = dotenv.env['SUPABASE_PROJECT_URL'];
+  final supabaseUrl =
+      dotenv.env['SUPABASE_PROJECT_URL'] ?? dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
 
-  if (supabaseUrl!.isEmpty || supabaseAnonKey!.isEmpty) {
+  if (supabaseUrl == null ||
+      supabaseUrl.isEmpty ||
+      supabaseAnonKey == null ||
+      supabaseAnonKey.isEmpty) {
     runApp(const ConfigMissingApp());
     return;
   }
@@ -33,8 +37,8 @@ class ConfigMissingApp extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Text(
-              'Missing SUPABASE_URL or SUPABASE_ANON_KEY.\n'
-              'Run with --dart-define values.',
+              'Missing SUPABASE_PROJECT_URL / SUPABASE_URL or SUPABASE_ANON_KEY.\n'
+              'Provide values via .env or --dart-define.',
               textAlign: TextAlign.center,
             ),
           ),
